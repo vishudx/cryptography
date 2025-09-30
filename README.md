@@ -1,9 +1,7 @@
-# Single-File Vigenère Cipher Solution (index.html) : 
+# Vigenère Cipher Solution (index.html) : 
 This solution uses inline <style> and <script> tags to house all the necessary code in one file.
 To create a single, web-based solution, I'll combine the HTML, CSS, and JavaScript into one self-contained index.html file. You can save the code block below as index.html and run it directly in any web browser.
 
-# Single-File Vigenère Cipher Solution (index.html) :
-This solution uses inline <style> and <script> tags to house all the necessary code in one file.
 
 
 # Vigenère Cipher Web Tool (Client-Side) :
