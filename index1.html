@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigenere Cipher Tool</title>
+    <style>
+        /* CSS for simple styling */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        h1 { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        textarea, input[type="text"] { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            box-sizing: border-box; 
+            border: 1px solid #ccc; 
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button { 
+            padding: 10px 15px; 
+            margin-right: 10px; 
+            cursor: pointer; 
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            transition: background-color 0.3s;
+        }
+        button:hover { background-color: #218838; }
+        #decrypt-btn { background-color: #dc3545; }
+        #decrypt-btn:hover { background-color: #c82333; }
+        #output { 
+            border: 1px solid #007bff; 
+            padding: 15px; 
+            min-height: 50px; 
+            background-color: #e9f5ff; 
+            border-radius: 4px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vigenère Cipher Tool 🔐</h1>
+    <p>Encrypt or decrypt your text using the Vigenère cipher. **Only alphabetic characters are shifted**.</p>
+
+    <label for="input-text">Input Text (Plaintext or Ciphertext):</label>
+    <textarea id="input-text" rows="6" placeholder="Enter your secret message here..."></textarea>
+
+    <label for="key">Keyword (Alphabetic characters only):</label>
+    <input type="text" id="key" placeholder="Enter your secret key..." value="CIPHERKEY">
+
+    <button onclick="processText('encrypt')">Encrypt ⬆️</button>
+    <button id="decrypt-btn" onclick="processText('decrypt')">Decrypt ⬇️</button>
+
+    <h2>Output:</h2>
+    <div id="output">Encrypted or Decrypted message will appear here.</div>
+
+    <script>
+        /* JavaScript logic for the Vigenere Cipher */
+        function processText(mode) {
+            const inputText = document.getElementById('input-text').value;
+            let key = document.getElementById('key').value;
+            const outputElement = document.getElementById('output');
+            
+            // 1. Key Cleaning and Validation
+            key = key.toUpperCase().replace(/[^A-Z]/g, '');
+            if (!key) {
+                outputElement.innerHTML = "Error: The keyword must contain only alphabetic characters and cannot be empty.";
+                return;
+            }
+
+            let result = '';
+            let keyIndex = 0;
+
+            for (let i = 0; i < inputText.length; i++) {
+                let char = inputText[i];
+                let upperChar = char.toUpperCase();
+
+                if (upperChar >= 'A' && upperChar <= 'Z') {
+                    const charCode = upperChar.charCodeAt(0);
+                    const keyChar = key[keyIndex % key.length];
+                    
+                    // Convert both key char and text char to 0-25 index
+                    const P_i = charCode - 'A'.charCodeAt(0);
+                    const K_i = keyChar.charCodeAt(0) - 'A'.charCodeAt(0);
+
+                    let shiftedIndex;
+                    
+                    if (mode === 'encrypt') {
+                        // Encryption: C_i = (P_i + K_i) mod 26
+                        shiftedIndex = (P_i + K_i) % 26;
+                    } else if (mode === 'decrypt') {
+                        // Decryption: P_i = (C_i - K_i + 26) mod 26
+                        // Adding 26 before modulo ensures a positive result for the negative difference (e.g., 0 - 1 = -1, -1 + 26 = 25)
+                        shiftedIndex = (P_i - K_i + 26) % 26;
+                    }
+                    
+                    let newChar = String.fromCharCode(shiftedIndex + 'A'.charCodeAt(0));
+                    
+                    // Preserve original character case
+                    if (char === upperChar) {
+                        result += newChar; // Uppercase
+                    } else {
+                        result += newChar.toLowerCase(); // Lowercase
+                    }
+                    
+                    keyIndex++; // Move to the next key character
+                } else {
+                    // Non-alphabetic characters (spaces, punctuation, numbers) are preserved
+                    result += char;
+                }
+            }
+
+            outputElement.innerHTML = result;
+        }
+    </script>
+</body>
+</html>
